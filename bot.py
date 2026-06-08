@@ -31,7 +31,15 @@ EASTERN = pytz.timezone("US/Eastern")
     description="Show the current Pintland date"
 )
 async def pintland_date(interaction: discord.Interaction):
-    await interaction.response.send_message(format_message())
+    try:
+        await interaction.response.defer()  # instantly acknowledges Discord
+
+        message = format_message()
+
+        await interaction.followup.send(message)
+
+    except Exception as e:
+        await interaction.followup.send(f"Error: {e}")
 
 
 # -----------------------------
