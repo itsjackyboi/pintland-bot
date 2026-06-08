@@ -1,1 +1,26 @@
+name: Daily Pintland Post
 
+on:
+  schedule:
+    # 8:30 AM Eastern
+    # During daylight savings this is 12:30 UTC
+    - cron: "30 12 * * *"
+
+  workflow_dispatch:
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install -r requirements.txt
+
+      - run: python send_message.py
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
