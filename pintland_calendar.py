@@ -8,10 +8,13 @@ with open("config.json", "r", encoding="utf-8") as f:
 # PINTLAND CALENDAR SETTINGS
 # =====================================
 
-# Jan 4, 2025 = Year 465, Cycle 5
-EPOCH = date(2025, 1, 4)
+# CANONICAL CALENDAR ANCHOR
+# Jan 1, 2026 = Mooringday, 1st Keg of Stormtide
+# Jan 1, 2026 = Year 466, Cycle 93
 
-START_YEAR = 465
+EPOCH = date(2026, 1, 1)
+
+START_YEAR = 466
 START_CYCLE = 93
 
 YEAR_DAYS = 360
@@ -36,6 +39,7 @@ def get_pintland_date(today=None):
     years_passed = delta_days // YEAR_DAYS
     year = START_YEAR + years_passed
 
+    # Cycle changes every 5 Pintland years
     cycle = START_CYCLE + ((year - START_YEAR) // 5)
 
     day_of_year = delta_days % YEAR_DAYS
@@ -68,7 +72,7 @@ def get_pintland_date(today=None):
 
 
 # =====================================
-# HELPER FUNCTIONS
+# ORDINAL HELPER
 # =====================================
 
 def ordinal(n):
