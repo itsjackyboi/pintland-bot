@@ -12,7 +12,7 @@ with open("config.json", "r", encoding="utf-8") as f:
 EPOCH = date(2025, 1, 4)
 
 START_YEAR = 465
-START_CYCLE = 5
+START_CYCLE = 93
 
 YEAR_DAYS = 360
 SEASON_DAYS = 117
