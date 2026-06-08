@@ -1,22 +1,31 @@
-from datetime import datetime, date
+from datetime import date
 import json
 
 with open("config.json", "r", encoding="utf-8") as f:
     cfg = json.load(f)
 
-EPOCH = datetime.strptime(cfg["epoch"], "%Y-%m-%d").date()
+# =====================================
+# PINTLAND CALENDAR SETTINGS
+# =====================================
 
-YEAR_DAYS = cfg["year_days"]        # 360
-SEASON_DAYS = cfg["season_days"]    # 117
-HOLIDAY_START = cfg["holiday_start"]
+# Jan 4, 2025 = Year 465, Cycle 5
+EPOCH = date(2025, 1, 4)
+
+START_YEAR = 465
+START_CYCLE = 5
+
+YEAR_DAYS = 360
+SEASON_DAYS = 117
+HOLIDAY_START = 351
 
 SEASONS = cfg["seasons"]
 WEEK_DAYS = cfg["week_days"]
 HOLIDAY_NAME = cfg["holiday_name"]
 
-# Cycle anchor (Jan 1 2026 = Cycle 5)
-CYCLE_OFFSET = 5
 
+# =====================================
+# DATE CALCULATION
+# =====================================
 
 def get_pintland_date(today=None):
     if today is None:
@@ -24,7 +33,11 @@ def get_pintland_date(today=None):
 
     delta_days = (today - EPOCH).days
 
-    cycle = (delta_days // YEAR_DAYS) + CYCLE_OFFSET
+    years_passed = delta_days // YEAR_DAYS
+    year = START_YEAR + years_passed
+
+    cycle = START_CYCLE + ((year - START_YEAR) // 5)
+
     day_of_year = delta_days % YEAR_DAYS
 
     week_day = WEEK_DAYS[day_of_year % len(WEEK_DAYS)]
@@ -32,6 +45,7 @@ def get_pintland_date(today=None):
     if day_of_year >= HOLIDAY_START:
         return {
             "cycle": cycle,
+            "year": year,
             "season": HOLIDAY_NAME,
             "season_day": (day_of_year - HOLIDAY_START) + 1,
             "week_day": week_day,
@@ -44,6 +58,7 @@ def get_pintland_date(today=None):
 
     return {
         "cycle": cycle,
+        "year": year,
         "season": SEASONS[season_index],
         "season_day": season_day,
         "week_day": week_day,
@@ -52,13 +67,26 @@ def get_pintland_date(today=None):
     }
 
 
+# =====================================
+# HELPER FUNCTIONS
+# =====================================
+
 def ordinal(n):
     if 10 <= n % 100 <= 20:
         suffix = "th"
     else:
-        suffix = {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th")
+        suffix = {
+            1: "st",
+            2: "nd",
+            3: "rd"
+        }.get(n % 10, "th")
+
     return f"{n}{suffix}"
 
+
+# =====================================
+# DISCORD MESSAGE FORMAT
+# =====================================
 
 def format_message():
     p = get_pintland_date()
@@ -67,6 +95,7 @@ def format_message():
 
     return (
         f"🍺 Good morning Liquor Kings.\n\n"
-        f"Today is {p['week_day']} in the {ordinal(keg_number)} Keg of {p['season']}: Cycle {p['cycle']}.\n\n"
+        f"Today is {p['week_day']} in the {ordinal(keg_number)} Keg of {p['season']}.\n\n"
+        f"Year {p['year']} — Cycle {p['cycle']}.\n\n"
         f"Happy Drinking!"
     )
