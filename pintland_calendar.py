@@ -89,7 +89,10 @@ def ordinal(n):
 # =====================================
 # DISCORD MESSAGE FORMAT
 # =====================================
-
+print("DEBUG delta_days:", p["year"], p["year_day"])
+print("DEBUG raw delta:", (date.today() - date(2026, 1, 1)).days)
+print("DEBUG weekday index:", (date.today() - date(2026, 1, 1)).days % 9)
+print("DEBUG weekday:", WEEK_DAYS[(date.today() - date(2026, 1, 1)).days % 9])
 def format_message():
     p = get_pintland_date()
 
