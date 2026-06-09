@@ -1,5 +1,5 @@
 from datetime import datetime, date
-import pytz
+from zoneinfo import ZoneInfo
 import re
 
 # -----------------------------
@@ -19,35 +19,32 @@ SEASONS = [
     ("Holiday", 360),
 ]
 
-# Anchor:
-# Jan 1, 2026 (America/New_York) = Mooringday, Year 466, Cycle 93 baseline
 EPOCH = date(2026, 1, 1)
 
 BASE_YEAR = 466
 BASE_CYCLE = 93
 
 # -----------------------------
-# TIME (MATCH REACT EXACTLY)
+# TIME (EST/EDT SAFE, NO PYTZ)
 # -----------------------------
 
 def get_today():
-    eastern = pytz.timezone("America/New_York")
+    eastern = ZoneInfo("America/New_York")
     return datetime.now(eastern).date()
 
 # -----------------------------
-# RUMOR LOADER (NUMBERED, MULTILINE SAFE)
+# RUMORS
 # -----------------------------
 
 def load_rumors():
     with open("rumors.txt", "r", encoding="utf-8") as f:
         content = f.read()
 
-    # Split on numbers like "1." "2." etc (works even with multiline entries)
     raw = re.split(r"\n(?=\d+\.\s)", content.strip())
 
     cleaned = []
     for r in raw:
-        r = re.sub(r"^\d+\.\s*", "", r).strip()  # remove leading "123. "
+        r = re.sub(r"^\d+\.\s*", "", r).strip()
         if r:
             cleaned.append(r)
 
@@ -56,22 +53,18 @@ def load_rumors():
 RUMORS = load_rumors()
 
 # -----------------------------
-# CORE CALENDAR LOGIC
+# CORE LOGIC
 # -----------------------------
 
 def get_calendar_data():
     today = get_today()
-
     delta_days = (today - EPOCH).days
 
-    # 9-day week
     dik = delta_days % 9
     day_name = DAY_NAMES[dik]
 
-    # 360-day year cycle
     doy = (delta_days % 360) + 1
 
-    # seasons + keg
     if doy <= 117:
         season = "Stormtide"
         keg = (doy - 1) // 9 + 1
@@ -85,7 +78,6 @@ def get_calendar_data():
         season = "Holiday"
         keg = 1
 
-    # Year + cycle (5-year cycle)
     year_offset = delta_days // 360
     pint_year = BASE_YEAR + year_offset
 
@@ -101,25 +93,23 @@ def get_calendar_data():
     }
 
 # -----------------------------
-# RUMOR PICK (NO REPEATS PER YEAR DAY)
+# RUMOR PICK
 # -----------------------------
 
 def get_rumor(doy):
     if not RUMORS:
         return None
-    index = (doy - 1) % len(RUMORS)
-    return RUMORS[index]
+    return RUMORS[(doy - 1) % len(RUMORS)]
 
 # -----------------------------
-# FINAL MESSAGE FORMAT
+# FINAL MESSAGE
 # -----------------------------
 
 def format_message():
     p = get_calendar_data()
-
     rumor = get_rumor(p["doy"])
 
-    msg = f"""🍺 Good morning Liquor Kings.
+    return f"""🍺 Good morning Liquor Kings.
 
 Today is {p['day_name']} in the {p['keg']}th Keg of {p['season']}.
 
@@ -129,15 +119,3 @@ Year {p['year']} — Cycle {p['cycle']}.
 {rumor if rumor else "No rumor today..."}
 
 Happy Drinking!"""
-
-    return msg
-
-
-# -----------------------------
-# DEBUG (SAFE)
-# -----------------------------
-
-if __name__ == "__main__":
-    p = get_calendar_data()
-    print("DEBUG:", p)
-    print(format_message())
