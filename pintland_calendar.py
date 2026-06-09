@@ -127,7 +127,7 @@ def format_message():
     # Safety fallback if fewer rumors than days
     rumor_index = rumor_index % len(rumors)
 
-    rumor = rumors[rumor_index]
+    rumor = re.sub(r"^\d+\.\s*", "", rumors[rumor_index]).strip()
 
     return (
         f"🍺 Good morning Liquor Kings.\n\n"
