@@ -113,14 +113,29 @@ p = get_pintland_date()
 keg_number = ((p["season_day"] - 1) // 9) + 1
 
 # Load rumors
-with open("rumors.txt", "r", encoding="utf-8") as f:
-    rumors = [line.strip() for line in f if line.strip()]
+import re
 
-# Day 1 = line 1
-# Day 2 = line 2
-# ...
-# Day 360 = line 360
+with open("rumors.txt", "r", encoding="utf-8") as f:
+    content = f.read()
+
+matches = list(re.finditer(r"^\d+\.\s", content, re.MULTILINE))
+
+rumors = []
+
+for i in range(len(matches)):
+    start = matches[i].start()
+
+    if i + 1 < len(matches):
+        end = matches[i + 1].start()
+    else:
+        end = len(content)
+
+    rumors.append(content[start:end].strip())
+
 rumor_index = p["year_day"] - 1
+
+if rumor_index >= len(rumors):
+    rumor_index = rumor_index % len(rumors)
 
 rumor = rumors[rumor_index]
 
