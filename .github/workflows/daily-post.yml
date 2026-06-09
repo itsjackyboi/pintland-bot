@@ -1,8 +1,9 @@
-name: Daily Pintland Post v2
+name: Daily Pintland Post
 
 on:
   schedule:
-  - cron: "*/15 * * * *"
+    # 8:30 AM Eastern (currently EDT = UTC-4)
+    - cron: "30 12 * * *"
 
   workflow_dispatch:
 
