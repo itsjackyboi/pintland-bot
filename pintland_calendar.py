@@ -1,122 +1,143 @@
-from datetime import date
-import json
+from datetime import datetime, date
+import pytz
 import re
 
-with open("config.json", "r", encoding="utf-8") as f:
-    cfg = json.load(f)
+# -----------------------------
+# PINTLAND CONFIG
+# -----------------------------
 
-# =====================================
-# PINTLAND CALENDAR SETTINGS
-# =====================================
+DAY_NAMES = [
+    "Mooringday", "Brewsday", "Tidecall",
+    "Grogsnap", "Beastwatch", "Lagerhorn",
+    "Bloodwake", "Keeldrift", "Hangover"
+]
 
+SEASONS = [
+    ("Stormtide", 117),
+    ("Goldsun", 234),
+    ("Veilfrost", 351),
+    ("Holiday", 360),
+]
+
+# Anchor:
+# Jan 1, 2026 (America/New_York) = Mooringday, Year 466, Cycle 93 baseline
 EPOCH = date(2026, 1, 1)
 
-START_YEAR = 466
-START_CYCLE = 93
+BASE_YEAR = 466
+BASE_CYCLE = 93
 
-YEAR_DAYS = 360
-SEASON_DAYS = 117
-HOLIDAY_START = 351
+# -----------------------------
+# TIME (MATCH REACT EXACTLY)
+# -----------------------------
 
-SEASONS = cfg["seasons"]
-WEEK_DAYS = cfg["week_days"]
-HOLIDAY_NAME = cfg["holiday_name"]
+def get_today():
+    eastern = pytz.timezone("America/New_York")
+    return datetime.now(eastern).date()
 
+# -----------------------------
+# RUMOR LOADER (NUMBERED, MULTILINE SAFE)
+# -----------------------------
 
-# =====================================
-# DATE CALCULATION
-# =====================================
-
-def get_pintland_date(today=None):
-    if today is None:
-        today = date.today()
-
-    delta_days = (today - EPOCH).days
-
-    years_passed = delta_days // YEAR_DAYS
-    year = START_YEAR + years_passed
-
-    cycle = START_CYCLE + ((year - START_YEAR) // 5)
-
-    day_of_year = delta_days % YEAR_DAYS
-
-    # FIXED: weekday is anchored to epoch (prevents drift like Bloodwake/Lagerhorn issue)
-    anchor = WEEK_DAYS.index("Mooringday")
-    week_day = WEEK_DAYS[(anchor + delta_days) % len(WEEK_DAYS)]
-
-    if day_of_year >= HOLIDAY_START:
-        return {
-            "cycle": cycle,
-            "year": year,
-            "season": HOLIDAY_NAME,
-            "season_day": (day_of_year - HOLIDAY_START) + 1,
-            "week_day": week_day,
-            "year_day": day_of_year + 1,
-            "is_holiday": True
-        }
-
-    season_index = day_of_year // SEASON_DAYS
-    season_day = (day_of_year % SEASON_DAYS) + 1
-
-    return {
-        "cycle": cycle,
-        "year": year,
-        "season": SEASONS[season_index],
-        "season_day": season_day,
-        "week_day": week_day,
-        "year_day": day_of_year + 1,
-        "is_holiday": False
-    }
-
-
-# =====================================
-# ORDINAL HELPER
-# =====================================
-
-def ordinal(n):
-    if 10 <= n % 100 <= 20:
-        suffix = "th"
-    else:
-        suffix = {
-            1: "st",
-            2: "nd",
-            3: "rd"
-        }.get(n % 10, "th")
-
-    return f"{n}{suffix}"
-
-
-# =====================================
-# DISCORD MESSAGE FORMAT
-# =====================================
-def format_message():
-    p = get_pintland_date()
-
-    print("DEBUG TODAY:", date.today())
-    print("DEBUG YEAR_DAY:", p["year_day"])
-    print("DEBUG WEEK_DAY:", p["week_day"])
-
-    keg_number = ((p["season_day"] - 1) // 9) + 1
-
+def load_rumors():
     with open("rumors.txt", "r", encoding="utf-8") as f:
         content = f.read()
 
-    matches = list(re.finditer(r"^\d+\.\s", content, re.MULTILINE))
+    # Split on numbers like "1." "2." etc (works even with multiline entries)
+    raw = re.split(r"\n(?=\d+\.\s)", content.strip())
 
-    rumors = []
-    for i in range(len(matches)):
-        start = matches[i].start()
-        end = matches[i + 1].start() if i + 1 < len(matches) else len(content)
-        rumors.append(content[start:end].strip())
+    cleaned = []
+    for r in raw:
+        r = re.sub(r"^\d+\.\s*", "", r).strip()  # remove leading "123. "
+        if r:
+            cleaned.append(r)
 
-    rumor_index = (p["year_day"] - 1) % len(rumors)
-    rumor = re.sub(r"^\d+\.\s*", "", rumors[rumor_index]).strip()
+    return cleaned
 
-    return (
-        f"🍺 Good morning Liquor Kings.\n\n"
-        f"Today is {p['week_day']} in the {ordinal(keg_number)} Keg of {p['season']}.\n\n"
-        f"Year {p['year']} — Cycle {p['cycle']}.\n\n"
-        f"📜 Tavern Rumor\n"
-        f"{rumor}\n\n"
-        f"Happy Drinking!"
-    )
+RUMORS = load_rumors()
+
+# -----------------------------
+# CORE CALENDAR LOGIC
+# -----------------------------
+
+def get_calendar_data():
+    today = get_today()
+
+    delta_days = (today - EPOCH).days
+
+    # 9-day week
+    dik = delta_days % 9
+    day_name = DAY_NAMES[dik]
+
+    # 360-day year cycle
+    doy = (delta_days % 360) + 1
+
+    # seasons + keg
+    if doy <= 117:
+        season = "Stormtide"
+        keg = (doy - 1) // 9 + 1
+    elif doy <= 234:
+        season = "Goldsun"
+        keg = (doy - 118) // 9 + 1
+    elif doy <= 351:
+        season = "Veilfrost"
+        keg = (doy - 235) // 9 + 1
+    else:
+        season = "Holiday"
+        keg = 1
+
+    # Year + cycle (5-year cycle)
+    year_offset = delta_days // 360
+    pint_year = BASE_YEAR + year_offset
+
+    cycle = BASE_CYCLE + (year_offset // 5)
+
+    return {
+        "day_name": day_name,
+        "season": season,
+        "keg": keg,
+        "year": pint_year,
+        "cycle": cycle,
+        "doy": doy
+    }
+
+# -----------------------------
+# RUMOR PICK (NO REPEATS PER YEAR DAY)
+# -----------------------------
+
+def get_rumor(doy):
+    if not RUMORS:
+        return None
+    index = (doy - 1) % len(RUMORS)
+    return RUMORS[index]
+
+# -----------------------------
+# FINAL MESSAGE FORMAT
+# -----------------------------
+
+def format_message():
+    p = get_calendar_data()
+
+    rumor = get_rumor(p["doy"])
+
+    msg = f"""🍺 Good morning Liquor Kings.
+
+Today is {p['day_name']} in the {p['keg']}th Keg of {p['season']}.
+
+Year {p['year']} — Cycle {p['cycle']}.
+
+📜 Tavern Rumor
+{rumor if rumor else "No rumor today..."}
+
+Happy Drinking!"""
+
+    return msg
+
+
+# -----------------------------
+# DEBUG (SAFE)
+# -----------------------------
+
+if __name__ == "__main__":
+    p = get_calendar_data()
+    print("DEBUG:", p)
+    print(format_message())
