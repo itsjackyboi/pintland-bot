@@ -9,12 +9,6 @@ with open("config.json", "r", encoding="utf-8") as f:
 # PINTLAND CALENDAR SETTINGS
 # =====================================
 
-# Jan 1, 2026 =
-# Mooringday
-# 1st Keg of Stormtide
-# Year 466
-# Cycle 93
-
 EPOCH = date(2026, 1, 1)
 
 START_YEAR = 466
@@ -46,9 +40,9 @@ def get_pintland_date(today=None):
 
     day_of_year = delta_days % YEAR_DAYS
 
-    week_day = WEEK_DAYS[day_of_year % len(WEEK_DAYS)]
+    # FIXED: weekday is anchored to epoch (prevents drift like Bloodwake/Lagerhorn issue)
+    week_day = WEEK_DAYS[delta_days % len(WEEK_DAYS)]
 
-    # HOLIDAY BRANCH
     if day_of_year >= HOLIDAY_START:
         return {
             "cycle": cycle,
@@ -60,7 +54,6 @@ def get_pintland_date(today=None):
             "is_holiday": True
         }
 
-    # NORMAL SEASONS
     season_index = day_of_year // SEASON_DAYS
     season_day = (day_of_year % SEASON_DAYS) + 1
 
@@ -101,34 +94,21 @@ def format_message():
 
     keg_number = ((p["season_day"] - 1) // 9) + 1
 
-    # Load numbered rumors
+    # Load and parse numbered rumors (multi-line safe)
     with open("rumors.txt", "r", encoding="utf-8") as f:
         content = f.read()
 
-    # Find rumors beginning with:
-    # 1.
-    # 2.
-    # 3.
-    # etc.
     matches = list(re.finditer(r"^\d+\.\s", content, re.MULTILINE))
 
     rumors = []
-
     for i in range(len(matches)):
         start = matches[i].start()
-
-        if i + 1 < len(matches):
-            end = matches[i + 1].start()
-        else:
-            end = len(content)
-
+        end = matches[i + 1].start() if i + 1 < len(matches) else len(content)
         rumors.append(content[start:end].strip())
 
-    rumor_index = p["year_day"] - 1
+    rumor_index = (p["year_day"] - 1) % len(rumors)
 
-    # Safety fallback if fewer rumors than days
-    rumor_index = rumor_index % len(rumors)
-
+    # Remove "1." / "2." prefix from output
     rumor = re.sub(r"^\d+\.\s*", "", rumors[rumor_index]).strip()
 
     return (
