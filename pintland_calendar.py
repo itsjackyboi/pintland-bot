@@ -89,16 +89,15 @@ def ordinal(n):
 # =====================================
 # DISCORD MESSAGE FORMAT
 # =====================================
-print("DEBUG delta_days:", p["year"], p["year_day"])
-print("DEBUG raw delta:", (date.today() - date(2026, 1, 1)).days)
-print("DEBUG weekday index:", (date.today() - date(2026, 1, 1)).days % 9)
-print("DEBUG weekday:", WEEK_DAYS[(date.today() - date(2026, 1, 1)).days % 9])
 def format_message():
     p = get_pintland_date()
 
+    print("DEBUG TODAY:", date.today())
+    print("DEBUG YEAR_DAY:", p["year_day"])
+    print("DEBUG WEEK_DAY:", p["week_day"])
+
     keg_number = ((p["season_day"] - 1) // 9) + 1
 
-    # Load and parse numbered rumors (multi-line safe)
     with open("rumors.txt", "r", encoding="utf-8") as f:
         content = f.read()
 
@@ -111,8 +110,6 @@ def format_message():
         rumors.append(content[start:end].strip())
 
     rumor_index = (p["year_day"] - 1) % len(rumors)
-
-    # Remove "1." / "2." prefix from output
     rumor = re.sub(r"^\d+\.\s*", "", rumors[rumor_index]).strip()
 
     return (
