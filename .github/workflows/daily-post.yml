@@ -2,9 +2,7 @@ name: Daily Pintland Post v2
 
 on:
   schedule:
-    # 8:30 AM Eastern
-    # During daylight savings this is 12:30 UTC
-    - cron: "30 12 * * *"
+  - cron: "*/15 * * * *"
 
   workflow_dispatch:
 
