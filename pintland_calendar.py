@@ -41,7 +41,8 @@ def get_pintland_date(today=None):
     day_of_year = delta_days % YEAR_DAYS
 
     # FIXED: weekday is anchored to epoch (prevents drift like Bloodwake/Lagerhorn issue)
-    week_day = WEEK_DAYS[delta_days % len(WEEK_DAYS)]
+    anchor = WEEK_DAYS.index("Mooringday")
+    week_day = WEEK_DAYS[(anchor + delta_days) % len(WEEK_DAYS)]
 
     if day_of_year >= HOLIDAY_START:
         return {
