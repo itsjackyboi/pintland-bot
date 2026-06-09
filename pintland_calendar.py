@@ -2,15 +2,23 @@ from datetime import date
 import json
 
 with open("config.json", "r", encoding="utf-8") as f:
-    cfg = json.load(f)
+cfg = json.load(f)
 
 # =====================================
+
 # PINTLAND CALENDAR SETTINGS
+
 # =====================================
 
-# CANONICAL CALENDAR ANCHOR
-# Jan 1, 2026 = Mooringday, 1st Keg of Stormtide
-# Jan 1, 2026 = Year 466, Cycle 93
+# Jan 1, 2026 =
+
+# Mooringday
+
+# 1st Keg of Stormtide
+
+# Year 466
+
+# Cycle 93
 
 EPOCH = date(2026, 1, 1)
 
@@ -25,81 +33,103 @@ SEASONS = cfg["seasons"]
 WEEK_DAYS = cfg["week_days"]
 HOLIDAY_NAME = cfg["holiday_name"]
 
-
 # =====================================
+
 # DATE CALCULATION
+
 # =====================================
 
 def get_pintland_date(today=None):
-    if today is None:
-        today = date.today()
+if today is None:
+today = date.today()
 
-    delta_days = (today - EPOCH).days
+```
+delta_days = (today - EPOCH).days
 
-    years_passed = delta_days // YEAR_DAYS
-    year = START_YEAR + years_passed
+years_passed = delta_days // YEAR_DAYS
+year = START_YEAR + years_passed
 
-    # Cycle changes every 5 Pintland years
-    cycle = START_CYCLE + ((year - START_YEAR) // 5)
+cycle = START_CYCLE + ((year - START_YEAR) // 5)
 
-    day_of_year = delta_days % YEAR_DAYS
+day_of_year = delta_days % YEAR_DAYS
 
-    week_day = WEEK_DAYS[day_of_year % len(WEEK_DAYS)]
+week_day = WEEK_DAYS[day_of_year % len(WEEK_DAYS)]
 
-    if day_of_year >= HOLIDAY_START:
-        return {
-            "cycle": cycle,
-            "year": year,
-            "season": HOLIDAY_NAME,
-            "season_day": (day_of_year - HOLIDAY_START) + 1,
-            "week_day": week_day,
-            "year_day": day_of_year + 1,
-            "is_holiday": True
-        }
-
-    season_index = day_of_year // SEASON_DAYS
-    season_day = (day_of_year % SEASON_DAYS) + 1
-
+if day_of_year >= HOLIDAY_START:
     return {
         "cycle": cycle,
         "year": year,
-        "season": SEASONS[season_index],
-        "season_day": season_day,
+        "season": HOLIDAY_NAME,
+        "season_day": (day_of_year - HOLIDAY_START) + 1,
         "week_day": week_day,
         "year_day": day_of_year + 1,
-        "is_holiday": False
+        "is_holiday": True
     }
 
+season_index = day_of_year // SEASON_DAYS
+season_day = (day_of_year % SEASON_DAYS) + 1
+
+return {
+    "cycle": cycle,
+    "year": year,
+    "season": SEASONS[season_index],
+    "season_day": season_day,
+    "week_day": week_day,
+    "year_day": day_of_year + 1,
+    "is_holiday": False
+}
+```
 
 # =====================================
+
 # ORDINAL HELPER
+
 # =====================================
 
 def ordinal(n):
-    if 10 <= n % 100 <= 20:
-        suffix = "th"
-    else:
-        suffix = {
-            1: "st",
-            2: "nd",
-            3: "rd"
-        }.get(n % 10, "th")
+if 10 <= n % 100 <= 20:
+suffix = "th"
+else:
+suffix = {
+1: "st",
+2: "nd",
+3: "rd"
+}.get(n % 10, "th")
 
-    return f"{n}{suffix}"
-
+```
+return f"{n}{suffix}"
+```
 
 # =====================================
+
 # DISCORD MESSAGE FORMAT
+
 # =====================================
 
 def format_message():
-    p = get_pintland_date()
+p = get_pintland_date()
 
-    keg_number = ((p["season_day"] - 1) // 9) + 1
+```
+keg_number = ((p["season_day"] - 1) // 9) + 1
 
-    return (
-        f"🍺 Good morning Liquor Kings.\n\n"
-        f"Today is {p['week_day']} in the {ordinal(keg_number)} Keg of {p['season']}.\n\n"
-        f"Year {p['year']} — Cycle {p['cycle']}.\n\n"
-        f"Happy Drinking!"
-    )
+# Load rumors
+with open("rumors.txt", "r", encoding="utf-8") as f:
+    rumors = [line.strip() for line in f if line.strip()]
+
+# Day 1 = line 1
+# Day 2 = line 2
+# ...
+# Day 360 = line 360
+rumor_index = p["year_day"] - 1
+
+rumor = rumors[rumor_index]
+
+return (
+    f"🍺 Good morning Liquor Kings.\n\n"
+    f"Today is {p['week_day']} in the {ordinal(keg_number)} Keg of {p['season']}.\n\n"
+    f"Year {p['year']} — Cycle {p['cycle']}.\n\n"
+    f"📜 Tavern Rumor\n"
+    f"{rumor}\n\n"
+    f"Happy Drinking!"
+)
+```
