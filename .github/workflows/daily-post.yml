@@ -3,7 +3,7 @@ name: Daily Pintland Post
 on:
   schedule:
     # 8:30 AM Eastern (currently EDT = UTC-4)
-    - cron: "30 12 * * *"
+    - cron: "30 8 * * *"
 
   workflow_dispatch:
 
