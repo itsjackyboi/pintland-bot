@@ -62,6 +62,28 @@ HOLIDAYS = [
         ),
     },
     {
+        "name": "Night of the False Sun",
+        "doy_start": 235,   # first day of Veilfrost
+        "doy_end":   235,
+        "description": (
+            "A lesser known ceremony observed only by the Ashen Oath. Deep into this night, "
+            "they abduct one person deemed responsible for the tainted culture of the isles. "
+            "Nobody knows what the ceremony consists of — but the charred body of the abducted "
+            "can be found hanging somewhere in Shanty Town the next morning."
+        ),
+    },
+    {
+        "name": "The Beggar's Dance",
+        "doy_start": 323,   # Keeldrift in the 10th Keg of Veilfrost
+        "doy_end":   323,
+        "description": (
+            "A commemoration of Aleforge's humble beginnings. Legend has it that after the town founders "
+            "saved the Brewmaster's Deity, they shared in a dance which brought great joy to the god. "
+            "Today the people continue this dance in celebration of the good nature and revelry "
+            "this town was founded on."
+        ),
+    },
+    {
         "name": "Night of the Earthen Veil",
         "doy_start": 270,   # last day of 4th Keg of Veilfrost (235 + 36 - 1)
         "doy_end":   270,
@@ -69,6 +91,36 @@ HOLIDAYS = [
             "A holy day originating with the Veilwalkers, spent in reverence of the earth and its blessings. "
             "It is bad luck to fish or log today. Nurture something living — a child, a pet, a garden, or the wildlands. "
             "A day of reflection and thankfulness for the land, waters, and skies."
+        ),
+    },
+    {
+        "name": "Providas",
+        "doy_start": 115,   # Bloodwake in the 13th Keg of Stormtide
+        "doy_end":   115,
+        "description": (
+            "A commemoration of the day the Monk Who Ne'er Slumbered began his exile to what is now Providence. "
+            "The people of Providence celebrate his noble voyage through a day of silent prayer. "
+            "A clear reminder of why they are not fond of Liquor Kings."
+        ),
+    },
+    {
+        "name": "LIQUOR DAY",
+        "doy_start": 232,   # Bloodwake in the 13th Keg of Goldsun
+        "doy_end":   232,
+        "description": (
+            "Celebrated across the isles — even those in Providence drink a little extra tonic today. "
+            "Founded when a lone captain, mutineered by his crew, washed ashore with a flask in his coat "
+            "filled with the most lovely of liquids. It was here that liquor was introduced to the isles, "
+            "and the peoples have rejoiced ever since."
+        ),
+    },
+    {
+        "name": "The Unholy Pilgrimage",
+        "doy_start": 260,   # Keeldrift in the 3rd Keg of Veilfrost
+        "doy_end":   260,
+        "description": (
+            "All are welcome to a day of bar crawling! Two rules: visit every established bar in the isles "
+            "and drink a beer at each one. Don't stop until your body gives up or you've made it to every bar!"
         ),
     },
     {
