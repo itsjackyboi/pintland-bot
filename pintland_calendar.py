@@ -5,29 +5,97 @@ import re
 # -----------------------------
 # PINTLAND CONFIG
 # -----------------------------
-
 DAY_NAMES = [
     "Mooringday", "Brewsday", "Tidecall",
     "Grogsnap", "Beastwatch", "Lagerhorn",
     "Bloodwake", "Keeldrift", "Hangover"
 ]
 
-SEASONS = [
-    ("Stormtide", 117),
-    ("Goldsun", 234),
-    ("Veilfrost", 351),
-    ("Holiday", 360),
-]
-
 EPOCH = date(2026, 1, 1)
-
 BASE_YEAR = 466
 BASE_CYCLE = 93
 
 # -----------------------------
+# PINTLAND HOLIDAYS
+# Defined by day-of-year (doy) in the Pintland calendar (1–360)
+#
+# Season boundaries:
+#   Stormtide : doy   1 – 117
+#   Goldsun   : doy 118 – 234
+#   Veilfrost : doy 235 – 351
+#   Holiday   : doy 352 – 360  (Hoppy Holidays — all 9 days)
+#
+# Keg boundaries within a season:
+#   Each keg = 9 days. Keg N of a season ends at: season_start + (N * 9) - 1
+#   4th Keg of Veilfrost ends at: 235 + 36 - 1 = doy 270
+#   5th Keg of Goldsun   ends at: 118 + 45 - 1 = doy 162
+# -----------------------------
+HOLIDAYS = [
+    {
+        "name": "Brewmaster's Eve",
+        "doy_start": 117,   # last day of Stormtide
+        "doy_end":   117,
+        "description": (
+            "The night before Brewmaster's Day. Each pint drunk during this night "
+            "is believed to save one soul from the Realm of the Soulless. "
+            "A night of sombering remembrance and preparation for tomorrow's revelry."
+        ),
+    },
+    {
+        "name": "Brewmaster's Day",
+        "doy_start": 118,   # first day of Goldsun
+        "doy_end":   118,
+        "description": (
+            "The day Aleforge's original Brewmaster received a blessing from the Brewmaster's Deity "
+            "and the spring of ale gushed forth — now the ale fountain in Aleforge's town square. "
+            "No work is to be done this day. The ale flows free for all."
+        ),
+    },
+    {
+        "name": "BEER DAY",
+        "doy_start": 162,   # last day of 5th Keg of Goldsun (118 + 45 - 1)
+        "doy_end":   162,
+        "description": (
+            "Held in high regard by the Shanty Pirates. Today, wine and liquor earn you a disappointed look. "
+            "It is customary to buy a beer for your fellow man — provided he buys yours as well. "
+            "A celebration of Beer and everything lovely that comes with it."
+        ),
+    },
+    {
+        "name": "Night of the Earthen Veil",
+        "doy_start": 270,   # last day of 4th Keg of Veilfrost (235 + 36 - 1)
+        "doy_end":   270,
+        "description": (
+            "A holy day originating with the Veilwalkers, spent in reverence of the earth and its blessings. "
+            "It is bad luck to fish or log today. Nurture something living — a child, a pet, a garden, or the wildlands. "
+            "A day of reflection and thankfulness for the land, waters, and skies."
+        ),
+    },
+    {
+        "name": "The Drunken Trials",
+        "doy_start": 177,
+        "doy_end":   177,
+        "one_time_year": 466,  # only fires in Pintland Year 466
+        "description": (
+            "The crown jewel of Aleforge culture. This year, in an unprecedented event, "
+            "SIX kings fight for the title of Liquor King!"
+        ),
+    },
+    {
+        "name": "Hoppy Holidays",
+        "doy_start": 352,   # first day of the Holiday Keg
+        "doy_end":   360,   # last day of the year
+        "description": (
+            "All the pirates gather in peace at Sackbeard's Tavern, setting their differences aside "
+            "to tell tales of adventure and gold. Bouncers are stationed outside — "
+            "if you look too sober, you're getting thrown in."
+        ),
+    },
+]
+
+# -----------------------------
 # TIME (EST/EDT SAFE, NO PYTZ)
 # -----------------------------
-
 def get_today():
     eastern = ZoneInfo("America/New_York")
     return datetime.now(eastern).date()
@@ -35,19 +103,15 @@ def get_today():
 # -----------------------------
 # RUMORS
 # -----------------------------
-
 def load_rumors():
     with open("rumors.txt", "r", encoding="utf-8") as f:
         content = f.read()
-
     raw = re.split(r"\n(?=\d+\.\s)", content.strip())
-
     cleaned = []
     for r in raw:
         r = re.sub(r"^\d+\.\s*", "", r).strip()
         if r:
             cleaned.append(r)
-
     return cleaned
 
 RUMORS = load_rumors()
@@ -55,7 +119,6 @@ RUMORS = load_rumors()
 # -----------------------------
 # CORE LOGIC
 # -----------------------------
-
 def get_calendar_data():
     today = get_today()
     delta_days = (today - EPOCH).days
@@ -80,7 +143,6 @@ def get_calendar_data():
 
     year_offset = delta_days // 360
     pint_year = BASE_YEAR + year_offset
-
     cycle = BASE_CYCLE + (year_offset // 5)
 
     return {
@@ -95,27 +157,86 @@ def get_calendar_data():
 # -----------------------------
 # RUMOR PICK
 # -----------------------------
-
 def get_rumor(doy):
     if not RUMORS:
         return None
     return RUMORS[(doy - 1) % len(RUMORS)]
 
 # -----------------------------
+# HOLIDAY CHECK
+# Compares today's doy against each holiday's doy range.
+# Countdown looks ahead up to 3 days, wrapping across the year boundary.
+# -----------------------------
+def get_holiday_notice(doy, pint_year):
+    notices = []
+    seen_upcoming = set()
+
+    for holiday in HOLIDAYS:
+        start = holiday["doy_start"]
+        end   = holiday["doy_end"]
+
+        # Skip one-time holidays that don't match the current Pintland year
+        if "one_time_year" in holiday and holiday["one_time_year"] != pint_year:
+            continue
+
+        # Is today inside the holiday range?
+        if start <= doy <= end:
+            # Only show description on the first day of a multi-day holiday
+            show_desc = (doy == start)
+            notices.append({
+                "type": "today",
+                "name": holiday["name"],
+                "description": holiday["description"] if show_desc else None,
+            })
+
+        # Is the start of this holiday 1–3 days away?
+        else:
+            for lookahead in range(1, 4):
+                future_doy = (doy - 1 + lookahead) % 360 + 1  # wraps year boundary
+                if future_doy == start:
+                    key = holiday["name"]
+                    if key not in seen_upcoming:
+                        seen_upcoming.add(key)
+                        notices.append({
+                            "type": "upcoming",
+                            "name": holiday["name"],
+                            "days": lookahead,
+                        })
+                    break
+
+    return notices
+
+# -----------------------------
 # FINAL MESSAGE
 # -----------------------------
-
 def format_message():
     p = get_calendar_data()
     rumor = get_rumor(p["doy"])
+    notices = get_holiday_notice(p["doy"], p["year"])
 
-    return f"""🍺 Good morning Liquor Kings.
+    msg = f"""🍺 Good morning Liquor Kings.
 
 Today is {p['day_name']} in the {p['keg']}th Keg of {p['season']}.
+Year {p['year']} — Cycle {p['cycle']}."""
 
-Year {p['year']} — Cycle {p['cycle']}.
+    if notices:
+        msg += "\n"
+        for notice in notices:
+            if notice["type"] == "today":
+                if notice["description"]:
+                    msg += f"\n🎉 **Today is {notice['name']}!**\n{notice['description']}"
+                else:
+                    msg += f"\n🎉 **Today is {notice['name']}!**"
+            elif notice["type"] == "upcoming":
+                days = notice["days"]
+                day_word = "day" if days == 1 else "days"
+                msg += f"\n📅 {days} {day_word} until **{notice['name']}**!"
+
+    msg += f"""
 
 📜 Tavern Rumor
 {rumor if rumor else "No rumor today..."}
 
 Happy Drinking!"""
+
+    return msg
