@@ -41,6 +41,7 @@
     "doy_end": 188,
     "notes": "test",
     "description": "test of new holiday record system"
+  },
   {
     "name": "LIQUOR DAY",
     "doy_start": 232,
