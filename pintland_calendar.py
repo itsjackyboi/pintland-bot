@@ -17,133 +17,21 @@ BASE_CYCLE = 93
 
 # -----------------------------
 # PINTLAND HOLIDAYS
-# Defined by day-of-year (doy) in the Pintland calendar (1–360)
-#
-# Season boundaries:
-#   Stormtide : doy   1 – 117
-#   Goldsun   : doy 118 – 234
-#   Veilfrost : doy 235 – 351
-#   Holiday   : doy 352 – 360  (Hoppy Holidays — all 9 days)
-#
-# Keg boundaries within a season:
-#   Each keg = 9 days. Keg N of a season ends at: season_start + (N * 9) - 1
-#   4th Keg of Veilfrost ends at: 235 + 36 - 1 = doy 270
-#   5th Keg of Goldsun   ends at: 118 + 45 - 1 = doy 162
+# Loaded from holidays.json — add new holidays there, not here.
+# Fields:
+#   name         : Display name
+#   doy_start    : First day of holiday (Pintland day-of-year, 1-360)
+#   doy_end      : Last day of holiday (same as doy_start for single-day)
+#   description  : Shown on the first day of the holiday
+#   notes        : (optional) Human-readable reminder of what the date maps to
+#   one_time_year: (optional) If set, holiday only fires in that Pintland year
 # -----------------------------
-HOLIDAYS = [
-    {
-        "name": "Brewmaster's Eve",
-        "doy_start": 117,   # last day of Stormtide
-        "doy_end":   117,
-        "description": (
-            "The night before Brewmaster's Day. Each pint drunk during this night "
-            "is believed to save one soul from the Realm of the Soulless. "
-            "A night of sombering remembrance and preparation for tomorrow's revelry."
-        ),
-    },
-    {
-        "name": "Brewmaster's Day",
-        "doy_start": 118,   # first day of Goldsun
-        "doy_end":   118,
-        "description": (
-            "The day Aleforge's original Brewmaster received a blessing from the Brewmaster's Deity "
-            "and the spring of ale gushed forth — now the ale fountain in Aleforge's town square. "
-            "No work is to be done this day. The ale flows free for all."
-        ),
-    },
-    {
-        "name": "BEER DAY",
-        "doy_start": 162,   # last day of 5th Keg of Goldsun (118 + 45 - 1)
-        "doy_end":   162,
-        "description": (
-            "Held in high regard by the Shanty Pirates. Today, wine and liquor earn you a disappointed look. "
-            "It is customary to buy a beer for your fellow man — provided he buys yours as well. "
-            "A celebration of Beer and everything lovely that comes with it."
-        ),
-    },
-    {
-        "name": "Night of the False Sun",
-        "doy_start": 235,   # first day of Veilfrost
-        "doy_end":   235,
-        "description": (
-            "A lesser known ceremony observed only by the Ashen Oath. Deep into this night, "
-            "they abduct one person deemed responsible for the tainted culture of the isles. "
-            "Nobody knows what the ceremony consists of — but the charred body of the abducted "
-            "can be found hanging somewhere in Shanty Town the next morning."
-        ),
-    },
-    {
-        "name": "The Beggar's Dance",
-        "doy_start": 323,   # Keeldrift in the 10th Keg of Veilfrost
-        "doy_end":   323,
-        "description": (
-            "A commemoration of Aleforge's humble beginnings. Legend has it that after the town founders "
-            "saved the Brewmaster's Deity, they shared in a dance which brought great joy to the god. "
-            "Today the people continue this dance in celebration of the good nature and revelry "
-            "this town was founded on."
-        ),
-    },
-    {
-        "name": "Night of the Earthen Veil",
-        "doy_start": 270,   # last day of 4th Keg of Veilfrost (235 + 36 - 1)
-        "doy_end":   270,
-        "description": (
-            "A holy day originating with the Veilwalkers, spent in reverence of the earth and its blessings. "
-            "It is bad luck to fish or log today. Nurture something living — a child, a pet, a garden, or the wildlands. "
-            "A day of reflection and thankfulness for the land, waters, and skies."
-        ),
-    },
-    {
-        "name": "Providas",
-        "doy_start": 115,   # Bloodwake in the 13th Keg of Stormtide
-        "doy_end":   115,
-        "description": (
-            "A commemoration of the day the Monk Who Ne'er Slumbered began his exile to what is now Providence. "
-            "The people of Providence celebrate his noble voyage through a day of silent prayer. "
-            "A clear reminder of why they are not fond of Liquor Kings."
-        ),
-    },
-    {
-        "name": "LIQUOR DAY",
-        "doy_start": 232,   # Bloodwake in the 13th Keg of Goldsun
-        "doy_end":   232,
-        "description": (
-            "Celebrated across the isles — even those in Providence drink a little extra tonic today. "
-            "Founded when a lone captain, mutineered by his crew, washed ashore with a flask in his coat "
-            "filled with the most lovely of liquids. It was here that liquor was introduced to the isles, "
-            "and the peoples have rejoiced ever since."
-        ),
-    },
-    {
-        "name": "The Unholy Pilgrimage",
-        "doy_start": 260,   # Keeldrift in the 3rd Keg of Veilfrost
-        "doy_end":   260,
-        "description": (
-            "All are welcome to a day of bar crawling! Two rules: visit every established bar in the isles "
-            "and drink a beer at each one. Don't stop until your body gives up or you've made it to every bar!"
-        ),
-    },
-    {
-        "name": "The Drunken Trials",
-        "doy_start": 177,
-        "doy_end":   177,
-        "one_time_year": 466,  # only fires in Pintland Year 466
-        "description": (
-            "The crown jewel of Aleforge culture. This year, in an unprecedented event, "
-            "SIX kings fight for the title of Liquor King!"
-        ),
-    },
-    {
-        "name": "Hoppy Holidays",
-        "doy_start": 352,   # first day of the Holiday Keg
-        "doy_end":   360,   # last day of the year
-        "description": (
-            "All the pirates gather in peace at Sackbeard's Tavern, setting their differences aside "
-            "to tell tales of adventure and gold. Bouncers are stationed outside — "
-            "if you look too sober, you're getting thrown in."
-        ),
-    },
-]
+def load_holidays():
+    import json
+    with open("holidays.json", "r", encoding="utf-8") as f:
+        return json.load(f)
+
+HOLIDAYS = load_holidays()
 
 # -----------------------------
 # TIME (EST/EDT SAFE, NO PYTZ)
