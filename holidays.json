@@ -1,0 +1,80 @@
+[
+  {
+    "name": "Providas",
+    "doy_start": 115,
+    "doy_end": 115,
+    "notes": "Bloodwake in the 13th Keg of Stormtide",
+    "description": "A commemoration of the day the Monk Who Ne'er Slumbered began his exile to what is now Providence. The people of Providence celebrate his noble voyage through a day of silent prayer. A clear reminder of why they are not fond of Liquor Kings."
+  },
+  {
+    "name": "Brewmaster's Eve",
+    "doy_start": 117,
+    "doy_end": 117,
+    "notes": "Last day of Stormtide",
+    "description": "The night before Brewmaster's Day. Each pint drunk during this night is believed to save one soul from the Realm of the Soulless. A night of sombering remembrance and preparation for tomorrow's revelry."
+  },
+  {
+    "name": "Brewmaster's Day",
+    "doy_start": 118,
+    "doy_end": 118,
+    "notes": "First day of Goldsun",
+    "description": "The day Aleforge's original Brewmaster received a blessing from the Brewmaster's Deity and the spring of ale gushed forth — now the ale fountain in Aleforge's town square. No work is to be done this day. The ale flows free for all."
+  },
+  {
+    "name": "BEER DAY",
+    "doy_start": 162,
+    "doy_end": 162,
+    "notes": "Last day of the 5th Keg of Goldsun",
+    "description": "Held in high regard by the Shanty Pirates. Today, wine and liquor earn you a disappointed look. It is customary to buy a beer for your fellow man — provided he buys yours as well. A celebration of Beer and everything lovely that comes with it."
+  },
+  {
+    "name": "The Drunken Trials",
+    "doy_start": 177,
+    "doy_end": 177,
+    "one_time_year": 466,
+    "notes": "Lagerhorn in the 7th Keg of Goldsun — Year 466 only",
+    "description": "The crown jewel of Aleforge culture. This year, in an unprecedented event, SIX kings fight for the title of Liquor King!"
+  },
+  {
+    "name": "LIQUOR DAY",
+    "doy_start": 232,
+    "doy_end": 232,
+    "notes": "Bloodwake in the 13th Keg of Goldsun",
+    "description": "Celebrated across the isles — even those in Providence drink a little extra tonic today. Founded when a lone captain, mutineered by his crew, washed ashore with a flask in his coat filled with the most lovely of liquids. It was here that liquor was introduced to the isles, and the peoples have rejoiced ever since."
+  },
+  {
+    "name": "Night of the False Sun",
+    "doy_start": 235,
+    "doy_end": 235,
+    "notes": "First day of Veilfrost",
+    "description": "A lesser known ceremony observed only by the Ashen Oath. Deep into this night, they abduct one person deemed responsible for the tainted culture of the isles. Nobody knows what the ceremony consists of — but the charred body of the abducted can be found hanging somewhere in Shanty Town the next morning."
+  },
+  {
+    "name": "The Unholy Pilgrimage",
+    "doy_start": 260,
+    "doy_end": 260,
+    "notes": "Keeldrift in the 3rd Keg of Veilfrost",
+    "description": "All are welcome to a day of bar crawling! Two rules: visit every established bar in the isles and drink a beer at each one. Don't stop until your body gives up or you've made it to every bar!"
+  },
+  {
+    "name": "Night of the Earthen Veil",
+    "doy_start": 270,
+    "doy_end": 270,
+    "notes": "Last day of the 4th Keg of Veilfrost",
+    "description": "A holy day originating with the Veilwalkers, spent in reverence of the earth and its blessings. It is bad luck to fish or log today. Nurture something living — a child, a pet, a garden, or the wildlands. A day of reflection and thankfulness for the land, waters, and skies."
+  },
+  {
+    "name": "The Beggar's Dance",
+    "doy_start": 323,
+    "doy_end": 323,
+    "notes": "Keeldrift in the 10th Keg of Veilfrost",
+    "description": "A commemoration of Aleforge's humble beginnings. Legend has it that after the town founders saved the Brewmaster's Deity, they shared in a dance which brought great joy to the god. Today the people continue this dance in celebration of the good nature and revelry this town was founded on."
+  },
+  {
+    "name": "Hoppy Holidays",
+    "doy_start": 352,
+    "doy_end": 360,
+    "notes": "The entire Holiday Keg — all 9 days",
+    "description": "All the pirates gather in peace at Sackbeard's Tavern, setting their differences aside to tell tales of adventure and gold. Bouncers are stationed outside — if you look too sober, you're getting thrown in."
+  }
+]
