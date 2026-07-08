@@ -36,6 +36,12 @@
     "description": "The crown jewel of Aleforge culture. This year, in an unprecedented event, SIX kings fight for the title of Liquor King!"
   },
   {
+    "name": "new holiday test",
+    "doy_start": 188,
+    "doy_end": 188,
+    "notes": "test",
+    "description": "test of new holiday record system"
+  {
     "name": "LIQUOR DAY",
     "doy_start": 232,
     "doy_end": 232,
