@@ -36,12 +36,19 @@
     "description": "The crown jewel of Aleforge culture. This year, in an unprecedented event, SIX kings fight for the title of Liquor King!"
   },
   {
-    "name": "new holiday test",
-    "doy_start": 188,
-    "doy_end": 188,
-    "notes": "test",
-    "description": "test of new holiday record system"
+    "name": "The Day of Hollow Tongues",
+    "doy_start": 197,
+    "doy_end": 197,
+    "notes": "Keeldrift of the 9th Keg in Goldsun",
+    "description": "When the Liquor Kings dragged Sexton Gobbler’s Veilwalker worship into the light, Cardinal Addy built a holy day from the wreckage. Each year on Hollow Tongues, the people of Providence stand before the crowd and name the sins they smell on their neighbors, every word scratched into the Hollow Ledger by a Friar. The Church calls it vigilance. The city calls it licensed gossip, though what gets spoken on Hollow Tongues has a grim habit of coming true"
   },
+  {
+    "name": "The Second Pintland Council",
+    "doy_start": 199,
+    "doy_end": 199,
+    "one_time_year": 466,
+    "notes": "Mooringday in the 10th Keg of Goldson — Year 466 only",
+    "description": "An unprecedented summit commences today! The 6 Liquor Kings travel from far and wide to meet in person for a discussion that will change world history. Bottoms up Liquor Kings, lets not try this one sober!"
   {
     "name": "LIQUOR DAY",
     "doy_start": 232,
