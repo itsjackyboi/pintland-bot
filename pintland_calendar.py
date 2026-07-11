@@ -27,9 +27,10 @@ BASE_CYCLE = 93
 #   one_time_year: (optional) If set, holiday only fires in that Pintland year
 # -----------------------------
 def load_holidays():
-    import json
-    with open("holidays.json", "r", encoding="utf-8") as f:
-        return json.load(f)
+    import tomllib
+    with open("holidays.toml", "rb") as f:
+        data = tomllib.load(f)
+    return data["holiday"]
 
 HOLIDAYS = load_holidays()
 
