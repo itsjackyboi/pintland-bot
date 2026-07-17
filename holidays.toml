@@ -75,3 +75,18 @@ doy_start = 352
 doy_end = 360
 notes = "The entire Holiday Keg -- all 9 days"
 description = "All the pirates gather in peace at Sackbeard's Tavern, setting their differences aside to tell tales of adventure and gold. Bouncers are stationed outside -- if you look too sober, you're getting thrown in."
+
+[[holiday]]
+name = "The 2nd Pintland Council"
+doy_start = 199
+doy_end = 199
+one_time_year = 466
+notes = "Year 466 only"
+description = "The Liquor King and Liquor Kings Emeritus gather together for an unprecedented meeting. In this backroom meeting the future of the Pintland Isles slowly comes into focus. Can man really control the destiny of the living world?"
+
+[[holiday]]
+name = "The Day of Hollow Tongues"
+doy_start = 199
+doy_end = 199
+notes = "Same day as The 2nd Pintland Council"
+description = "When the Liquor Kings dragged Sexton Gobbler's Veilwalker worship into the light, Cardinal Addy built a holy day from the wreckage. Each year on Hollow Tongues, the people of Providence stand before the crowd and name the sins they smell on their neighbors, every word scratched into the Hollow Ledger by a Friar. The Church calls it vigilance. The city calls it licensed gossip, though what gets spoken on Hollow Tongues has a grim habit of coming true."
