@@ -155,7 +155,7 @@ def format_message():
     rumor = get_rumor(p["doy"])
     notices = get_holiday_notice(p["doy"], p["year"])
 
-    msg = f"""🍺 Good morning Liquor Kings.
+    msg = f"""🍺 Good morning to The Six.
 
 Today is {p['day_name']} in the {p['keg']}th Keg of {p['season']}.
 Year {p['year']} — Cycle {p['cycle']}."""
