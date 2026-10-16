@@ -50,6 +50,8 @@ def load_rumors():
     raw = re.split(r"\n(?=\d+\.\s)", content.strip())
     cleaned = []
     for r in raw:
+        if not re.match(r"\d+\.\s", r):
+            continue  # skip title/header block so index == line number - 1
         r = re.sub(r"^\d+\.\s*", "", r).strip()
         if r:
             cleaned.append(r)
